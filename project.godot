@@ -13,7 +13,10 @@ config_version=5
 config/name="Dungeon Game"
 run/main_scene="res://scene/world.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
-config/icon="res://icon.svg"
+
+[autoload]
+
+global="*res://script/global.gd"
 
 [input]
 

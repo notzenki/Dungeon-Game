@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bor6nm8igr5y3"
-path="res://.godot/imported/Run.png-52682a87628b47fd410a880619362485.ctex"
+uid="uid://c23nwt7sf41yb"
+path="res://.godot/imported/rat-run-outline.png-4331fc75d42352beeb3c11562b67948e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Mushroom/Run.png"
-dest_files=["res://.godot/imported/Run.png-52682a87628b47fd410a880619362485.ctex"]
+source_file="res://assets/Enemy/Rat/OutlinedRat/rat-run-outline.png"
+dest_files=["res://.godot/imported/rat-run-outline.png-4331fc75d42352beeb3c11562b67948e.ctex"]
 
 [params]
 

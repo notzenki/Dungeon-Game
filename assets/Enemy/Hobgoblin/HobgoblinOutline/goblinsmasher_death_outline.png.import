@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b0ck8e13htxel"
-path="res://.godot/imported/Attack.png-c0092a3e7353f0f68929c0e68ad84a4a.ctex"
+uid="uid://dya34b4fi0rg7"
+path="res://.godot/imported/goblinsmasher_death_outline.png-45af56fa6025295b9f43942efd8409fa.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Mushroom/Attack.png"
-dest_files=["res://.godot/imported/Attack.png-c0092a3e7353f0f68929c0e68ad84a4a.ctex"]
+source_file="res://assets/Enemy/Hobgoblin/HobgoblinOutline/goblinsmasher_death_outline.png"
+dest_files=["res://.godot/imported/goblinsmasher_death_outline.png-45af56fa6025295b9f43942efd8409fa.ctex"]
 
 [params]
 

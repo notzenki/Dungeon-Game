@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://do74ghlvqbsnn"
-path="res://.godot/imported/Take Hit.png-d5dc6c906063dc940901ce6035b81260.ctex"
+uid="uid://cs62k10fj6ut0"
+path="res://.godot/imported/rat-hurt-outline.png-00b669cafc288315dfca57ec4fb31ae6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Mushroom/Take Hit.png"
-dest_files=["res://.godot/imported/Take Hit.png-d5dc6c906063dc940901ce6035b81260.ctex"]
+source_file="res://assets/Enemy/Rat/OutlinedRat/rat-hurt-outline.png"
+dest_files=["res://.godot/imported/rat-hurt-outline.png-00b669cafc288315dfca57ec4fb31ae6.ctex"]
 
 [params]
 

@@ -1,9 +1,12 @@
 extends CharacterBody2D
 
-const SPEED = 500
+const SPEED = 250
 
 @onready var animated_sprite = $AnimatedSprite2D
 @onready var timer = $Timer
+@onready var take_damage_cooldown = $take_damage_cooldown
+@onready var attack_cooldown = $attack_cooldown
+
 
 enum player_state {IDLE, RUN, DODGE, DEAD, HIT, ATTACK}
 var current_state: player_state
@@ -11,25 +14,38 @@ var can_dodge: bool = true
 var input = Vector2.ZERO
 
 #Dodge Variables
-var dodge_speed: float = 800.0
+var dodge_speed: float = 500.0
 var dodge_duration: float = 0.5
 var dodge_cooldown: float = 0.5
 var is_dodging: bool = false
-
 var dodge_timer: float = 0.0
-var cooldown_timer: float = 0.0
+var dodge_cooldown_timer: float = 0.0
 var dodge_direction: Vector2 = Vector2.ZERO
+
+#Combat Variables
+var enemy_in_attack_range = false
+var enemy_attack_cooldown = true
+var health = 100
+var player_alive = true
+var is_attacking: bool = false
+
+
+
 
 
 func _ready():
 	current_state = player_state.IDLE
+	#attack_cooldown.wait_time = 0.5  # Set this to the desired attack duration
 
 func _physics_process(delta):
 	
 	get_input()
 	handle_dodge(delta)
 	player_movement(delta)
+	attack()
 	play_animation()
+	enemy_attack()
+	player_health()
 	move_and_slide()
 	
 #Inputs for movement
@@ -61,7 +77,7 @@ func player_movement(delta):
 	
 	
 func  handle_dodge(delta):
-	if Input.is_action_just_pressed("dodge") and cooldown_timer <= 0.0 and input != Vector2.ZERO:
+	if Input.is_action_just_pressed("dodge") and dodge_cooldown_timer <= 0.0 and input != Vector2.ZERO:
 		start_dodge()
 		
 	if is_dodging:
@@ -69,14 +85,14 @@ func  handle_dodge(delta):
 		if dodge_timer <= 0.0:
 			end_dodge()
 	else:
-		cooldown_timer = max(cooldown_timer - delta, 0)
+		dodge_cooldown_timer = max(dodge_cooldown_timer - delta, 0)
 	
 	
 func start_dodge():
 	is_dodging = true
 	current_state = player_state.DODGE
 	dodge_timer = dodge_duration
-	cooldown_timer = dodge_cooldown
+	dodge_cooldown_timer = dodge_cooldown
 	dodge_direction = input
 	
 func end_dodge():
@@ -101,5 +117,54 @@ func play_animation():
 			animated_sprite.play("roll")
 		_:
 			animated_sprite.play("idle")
-	
+
+
+#Handle Combat
+
+func player():
+	pass
+
+func attack():
+	if Input.is_action_just_pressed("attack"):
+		global.player_current_attack = true
+		current_state = player_state.ATTACK
+		is_attacking = true
+		attack_cooldown.start()
+
+
+
+func player_health():
+	if health <= 0:
+		player_alive = false
+		health = 0
+		current_state = player_state.DEAD
+		print("player has died")
+
+func _on_player_hitbox_body_entered(body):
+	if body.has_method("enemy"):
+		enemy_in_attack_range = true
+		
+
+func _on_player_hitbox_body_exited(body):
+	if body.has_method("enemy"):
+		enemy_in_attack_range = false
+		
+		
+func enemy_attack():
+	if enemy_in_attack_range and enemy_attack_cooldown == true:
+		health = health - 25
+		enemy_attack_cooldown = false
+		take_damage_cooldown.start()
+		print(health)
+
+
+func _on_take_damage_cooldown_timeout():
+	enemy_attack_cooldown = true
+
+
+func _on_attack_cooldown_timeout():
+	global.player_current_attack = false
+	is_attacking = false
+	current_state = player_state.IDLE
+	attack_cooldown.stop()
 	
