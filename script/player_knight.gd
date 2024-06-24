@@ -32,17 +32,15 @@ var is_attacking: bool = false
 
 
 
-
 func _ready():
 	current_state = player_state.IDLE
-	#attack_cooldown.wait_time = 0.5  # Set this to the desired attack duration
 
 func _physics_process(delta):
 	
 	get_input()
 	handle_dodge(delta)
 	player_movement(delta)
-	attack()
+	handle_attack()
 	play_animation()
 	enemy_attack()
 	player_health()
@@ -53,6 +51,7 @@ func get_input():
 	input = Input.get_vector("move_left", "move_right", "move_up", "move_down").normalized()
 	
 func player_movement(delta):
+
 #Dodging
 	if is_dodging:
 		velocity = dodge_direction * dodge_speed
@@ -63,17 +62,21 @@ func player_movement(delta):
 		else:
 			velocity = input * SPEED
 	
-#Flip the sprite
-		if input.x > 0:
-			animated_sprite.flip_h = false
-		elif input.x < 0:
-			animated_sprite.flip_h = true
-	
-#Character Animations
-		if velocity.length() > 0.0 :
-			current_state = player_state.RUN
+		if is_attacking:
+			current_state = player_state.ATTACK
 		else:
-			current_state = player_state.IDLE
+	
+#Flip the sprite
+			if input.x > 0:
+				animated_sprite.flip_h = false
+			elif input.x < 0:
+				animated_sprite.flip_h = true
+		
+	#Character Animations
+			if velocity.length() > 0.0 :
+				current_state = player_state.RUN
+			else:
+				current_state = player_state.IDLE
 	
 	
 func  handle_dodge(delta):
@@ -124,12 +127,22 @@ func play_animation():
 func player():
 	pass
 
-func attack():
-	if Input.is_action_just_pressed("attack"):
-		global.player_current_attack = true
-		current_state = player_state.ATTACK
-		is_attacking = true
-		attack_cooldown.start()
+func handle_attack():
+	if Input.is_action_just_pressed("attack") and !is_attacking:
+		start_attack()
+		
+		
+
+func start_attack():
+	global.player_current_attack = true
+	is_attacking = true
+	#current_state = player_state.ATTACK
+	attack_cooldown.start()
+
+func end_attack():
+	global.player_current_attack = false
+	is_attacking = false
+	#current_state = player_state.IDLE
 
 
 
@@ -163,8 +176,5 @@ func _on_take_damage_cooldown_timeout():
 
 
 func _on_attack_cooldown_timeout():
-	global.player_current_attack = false
-	is_attacking = false
-	current_state = player_state.IDLE
-	attack_cooldown.stop()
+	end_attack()
 	
