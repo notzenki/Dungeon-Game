@@ -3,9 +3,15 @@ extends CharacterBody2D
 const SPEED = 250
 
 @onready var animated_sprite = $AnimatedSprite2D
+@onready var player_collition = $player_collition
+@onready var player_hitbox = $player_hitbox
+@onready var player_hurtbox = $player_hurtbox
 @onready var timer = $Timer
 @onready var take_damage_cooldown = $take_damage_cooldown
 @onready var attack_cooldown = $attack_cooldown
+
+
+
 
 
 enum player_state {IDLE, RUN, DODGE, DEAD, HIT, ATTACK}
@@ -28,7 +34,7 @@ var enemy_attack_cooldown = true
 var health = 100
 var player_alive = true
 var is_attacking: bool = false
-
+var damage = 20
 
 
 
@@ -69,8 +75,14 @@ func player_movement(delta):
 #Flip the sprite
 			if input.x > 0:
 				animated_sprite.flip_h = false
+				player_collition.position.x = -4
+				player_hurtbox.scale.x = 1
+				player_hitbox.scale.x = 1
 			elif input.x < 0:
 				animated_sprite.flip_h = true
+				player_collition.position.x = 4
+				player_hurtbox.scale.x = -1
+				player_hitbox.scale.x = -1
 		
 	#Character Animations
 			if velocity.length() > 0.0 :

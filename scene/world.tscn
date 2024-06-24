@@ -2302,6 +2302,7 @@ scale = Vector2(1.0013, 0.951301)
 [node name="Camera2D2" type="Camera2D" parent="PlayerKnight"]
 y_sort_enabled = true
 zoom = Vector2(2.2, 2.2)
+process_callback = 0
 
 [node name="Rat" parent="." instance=ExtResource("3_w3ktc")]
 position = Vector2(699, 321)

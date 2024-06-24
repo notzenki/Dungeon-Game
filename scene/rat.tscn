@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://bnr3qe5y36duy"]
+[gd_scene load_steps=37 format=3 uid="uid://bnr3qe5y36duy"]
 
 [ext_resource type="Texture2D" uid="uid://dy15cino8hiu2" path="res://assets/Enemy/Rat/OutlinedRat/rat-attack-outline.png" id="1_5oor0"]
 [ext_resource type="Script" path="res://script/rat.gd" id="1_feuvs"]
@@ -218,9 +218,13 @@ height = 18.0
 radius = 130.096
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_et7ok"]
-radius = 16.1245
+radius = 12.0
 
-[node name="Rat" type="CharacterBody2D"]
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_cwtc1"]
+radius = 8.0
+height = 26.0
+
+[node name="Rat" type="CharacterBody2D" groups=["Enemy"]]
 z_index = 1
 y_sort_enabled = true
 script = ExtResource("1_feuvs")
@@ -228,8 +232,10 @@ script = ExtResource("1_feuvs")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_lxsk7")
-animation = &"dead"
+animation = &"attack"
 autoplay = "idle"
+frame = 4
+frame_progress = 0.363265
 offset = Vector2(0, -12)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -246,6 +252,12 @@ shape = SubResource("CircleShape2D_f25nw")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="enemy_hitbox"]
 shape = SubResource("CircleShape2D_et7ok")
+
+[node name="enemy_hurtbox" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="enemy_hurtbox"]
+position = Vector2(4, -7)
+shape = SubResource("CapsuleShape2D_cwtc1")
 
 [connection signal="body_entered" from="detection_area" to="." method="_on_detection_area_body_entered"]
 [connection signal="body_exited" from="detection_area" to="." method="_on_detection_area_body_exited"]
