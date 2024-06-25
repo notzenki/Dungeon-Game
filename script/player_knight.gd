@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+class_name Player
+
 const SPEED = 250
 
 @onready var animated_sprite = $AnimatedSprite2D
@@ -33,8 +35,8 @@ var enemy_in_attack_range = false
 var enemy_attack_cooldown = true
 var health = 100
 var player_alive = true
-var is_attacking: bool = false
-var damage = 20
+var is_attacking = false
+var damage = 2
 
 
 
@@ -49,7 +51,7 @@ func _physics_process(delta):
 	handle_attack()
 	play_animation()
 	enemy_attack()
-	player_health()
+	player_death()
 	move_and_slide()
 	
 #Inputs for movement
@@ -58,37 +60,41 @@ func get_input():
 	
 func player_movement(delta):
 
-#Dodging
-	if is_dodging:
-		velocity = dodge_direction * dodge_speed
+	if !player_alive:
+		current_state = player_state.DEAD
+		animated_sprite.pause()
 	else:
+#Dodging
+		if is_dodging:
+			velocity = dodge_direction * dodge_speed
+		else:
 #Movement
-		if input == Vector2.ZERO:
-			velocity = Vector2.ZERO
-		else:
-			velocity = input * SPEED
-	
-		if is_attacking:
-			current_state = player_state.ATTACK
-		else:
+			if input == Vector2.ZERO:
+				velocity = Vector2.ZERO
+			else:
+				velocity = input * SPEED
+#Attack
+			if is_attacking:
+				current_state = player_state.ATTACK
+			else:
 	
 #Flip the sprite
-			if input.x > 0:
-				animated_sprite.flip_h = false
-				player_collition.position.x = -4
-				player_hurtbox.scale.x = 1
-				player_hitbox.scale.x = 1
-			elif input.x < 0:
-				animated_sprite.flip_h = true
-				player_collition.position.x = 4
-				player_hurtbox.scale.x = -1
-				player_hitbox.scale.x = -1
+				if input.x > 0:
+					animated_sprite.flip_h = false
+					player_collition.position.x = -4
+					player_hurtbox.scale.x = 1
+					player_hitbox.scale.x = 1
+				elif input.x < 0:
+					animated_sprite.flip_h = true
+					player_collition.position.x = 4
+					player_hurtbox.scale.x = -1
+					player_hitbox.scale.x = -1
 		
 	#Character Animations
-			if velocity.length() > 0.0 :
-				current_state = player_state.RUN
-			else:
-				current_state = player_state.IDLE
+				if velocity.length() > 0.0 :
+					current_state = player_state.RUN
+				else:
+					current_state = player_state.IDLE
 	
 	
 func  handle_dodge(delta):
@@ -109,11 +115,13 @@ func start_dodge():
 	dodge_timer = dodge_duration
 	dodge_cooldown_timer = dodge_cooldown
 	dodge_direction = input
+	set_collision_mask_value(2,0)
 	
 func end_dodge():
 	is_dodging = false
 	velocity = Vector2.ZERO
 	current_state = player_state.IDLE
+	set_collision_mask_value(2,1)
 	
 	
 func play_animation():
@@ -139,54 +147,67 @@ func play_animation():
 func player():
 	pass
 
+#Player Attack
 func handle_attack():
 	if Input.is_action_just_pressed("attack") and !is_attacking:
 		start_attack()
-		
-		
 
 func start_attack():
+	var overlapping_objects = player_hurtbox.get_overlapping_areas()
+	
+	for area in overlapping_objects:
+		var parent = area.get_parent()
+		if parent.has_method("enemy"):
+			parent.health -= damage
+			print(parent.health)
+	
 	global.player_current_attack = true
 	is_attacking = true
-	#current_state = player_state.ATTACK
 	attack_cooldown.start()
 
 func end_attack():
 	global.player_current_attack = false
 	is_attacking = false
-	#current_state = player_state.IDLE
+
+func _on_attack_cooldown_timeout():
+	end_attack()
 
 
 
-func player_health():
+
+func player_death():
 	if health <= 0:
 		player_alive = false
 		health = 0
-		current_state = player_state.DEAD
 		print("player has died")
 
-func _on_player_hitbox_body_entered(body):
-	if body.has_method("enemy"):
-		enemy_in_attack_range = true
-		
 
-func _on_player_hitbox_body_exited(body):
-	if body.has_method("enemy"):
-		enemy_in_attack_range = false
-		
-		
-func enemy_attack():
-	if enemy_in_attack_range and enemy_attack_cooldown == true:
-		health = health - 25
-		enemy_attack_cooldown = false
-		take_damage_cooldown.start()
-		print(health)
+
 
 
 func _on_take_damage_cooldown_timeout():
 	enemy_attack_cooldown = true
 
 
-func _on_attack_cooldown_timeout():
-	end_attack()
+func _on_player_hitbox_body_entered(body):
+	if body.has_method("enemy"):
+		enemy_in_attack_range = true
+	
+	pass
+
+func _on_player_hitbox_body_exited(body):
+	if body.has_method("enemy"):
+		enemy_in_attack_range = false
+		
+	pass
+	
+func enemy_attack():
+	if enemy_in_attack_range and enemy_attack_cooldown == true:
+		health = health - 25
+		enemy_attack_cooldown = false
+		take_damage_cooldown.start()
+		print(health)
+	pass
+
+
 	
