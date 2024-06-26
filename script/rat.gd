@@ -18,10 +18,12 @@ var player_chase = false
 var player_entity = null
 
 #Combat Variables
-var health = 20
+var enemy_health = 20
+var enemy_armor = 2
+var enemy_damage = 2
+var enemy_buff = 0
 var enemy_alive = true
 var player_in_attack_zone = false
-var damage = 2
 var is_attacking = false
 
 
@@ -32,7 +34,6 @@ func _ready():
 func _physics_process(delta):
 	
 	#start_attack()
-	death()
 	play_animation()
 	handle_movement(delta)
 
@@ -100,7 +101,7 @@ func start_attack():
 	for area in enemy_hurtbox.get_overlapping_areas():
 		var parent = area.get_parent()
 		if parent is Player: #and attack_cooldown.time_left <= 0:
-			parent.health -= damage
+			parent.health -= enemy_damage
 			print(parent.health)
 
 func end_attack():
@@ -110,14 +111,21 @@ func end_attack():
 func _on_attack_cooldown_timeout():
 	end_attack()
 
-func receive_damage(damage):
-	health -= damage
+func receive_damage(damage:int):
+	var effective_damage = calculate_effective_damage(damage)
+	enemy_health -= effective_damage
+	if enemy_health <= 0:
+		death()
+
+
+func calculate_effective_damage(damage:int) -> int:
+	var effective_damage = damage - enemy_armor
+	return max(effective_damage, 0)  # Ensures damage is not negative
 
 func death():
-	if health <= 0:
-		enemy_alive = false
-		health = 0
-		print("enemy has died")
+	enemy_alive = false
+	enemy_health = 0
+	print("enemy has died")
 
 
 

@@ -142,8 +142,8 @@ func start_attack():
 	for area in player_hurtbox.get_overlapping_areas():
 		var parent = area.get_parent()
 		if parent is Enemy:
-			parent.health -= player_damage
-			print(parent.health)
+			parent.receive_damage(calculate_total_damage())
+			print(parent.enemy_health)
 
 func end_attack():
 	is_attacking = false
@@ -160,7 +160,13 @@ func player_death():
 		player_alive = false
 		health = 0
 		print("player has died")
+		emit_signal("player_died")
 
+func calculate_total_damage() -> int:
+	var total_damage = player_damage
+	for buff in buffs:
+		total_damage += buff.damage_bonus
+	return total_damage
 
 
 
