@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://358yjxfp4ol3" path="res://assets/Player Knight/_Roll.png" id="3_e8043"]
 [ext_resource type="Texture2D" uid="uid://bcb86rnq7wrgp" path="res://assets/Player Knight/_Run.png" id="4_gjej0"]
 [ext_resource type="Texture2D" uid="uid://be1plsnx8dgbn" path="res://assets/Player Knight/_Hit.png" id="4_wfvie"]
-[ext_resource type="Script" path="res://scene/player_hitbox.gd" id="9_7mjjn"]
+[ext_resource type="Script" path="res://script/player_hitbox.gd" id="9_ec8wo"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_83qe3"]
 atlas = ExtResource("2_0pppw")
@@ -407,7 +407,7 @@ position = Vector2(-4, 1.75)
 shape = SubResource("RectangleShape2D_ukux6")
 
 [node name="player_hitbox" type="Area2D" parent="."]
-script = ExtResource("9_7mjjn")
+script = ExtResource("9_ec8wo")
 
 [node name="hitbox_shape" type="CollisionShape2D" parent="player_hitbox"]
 position = Vector2(-4, 2)
@@ -415,6 +415,7 @@ shape = SubResource("RectangleShape2D_10rtq")
 debug_color = Color(0.863524, 0.348871, 0.220223, 0.42)
 
 [node name="player_hurtbox" type="Area2D" parent="."]
+monitorable = false
 
 [node name="hurtbox_shape" type="CollisionShape2D" parent="player_hurtbox"]
 position = Vector2(27, -7.5)
@@ -423,10 +424,13 @@ shape = SubResource("RectangleShape2D_ag83y")
 [node name="take_damage_cooldown" type="Timer" parent="."]
 wait_time = 2.0
 
-[node name="attack_cooldown" type="Timer" parent="."]
+[node name="attack_animation_timer" type="Timer" parent="."]
+process_callback = 0
 wait_time = 0.25
+one_shot = true
+autostart = true
 
 [connection signal="body_entered" from="player_hitbox" to="." method="_on_player_hitbox_body_entered"]
 [connection signal="body_exited" from="player_hitbox" to="." method="_on_player_hitbox_body_exited"]
 [connection signal="timeout" from="take_damage_cooldown" to="." method="_on_take_damage_cooldown_timeout"]
-[connection signal="timeout" from="attack_cooldown" to="." method="_on_attack_cooldown_timeout"]
+[connection signal="timeout" from="attack_animation_timer" to="." method="_on_attack_animation_timer_timeout"]

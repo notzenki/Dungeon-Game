@@ -1,5 +1,6 @@
 extends CharacterBody2D
 
+class_name Enemy
 
 const SPEED = 50.0
 
@@ -92,19 +93,15 @@ func enemy():
 	pass
 
 func start_attack():
-	var overlapping_objects = enemy_hurtbox.get_overlapping_areas()
-	
-	for area in overlapping_objects:
-		var parent = area.get_parent()
-		if parent is Player and attack_cooldown.time_left <= 0:
-			parent.health -= damage
-			print(parent.health)
-			attack_cooldown.start()
-			#hacer que el dano solo le entre al hurtbox
-	
+	is_attacking = true
 	global.enemy_current_attack = true
 	current_state = enemy_state.ATTACK
-	
+	attack_cooldown.start()
+	for area in enemy_hurtbox.get_overlapping_areas():
+		var parent = area.get_parent()
+		if parent is Player: #and attack_cooldown.time_left <= 0:
+			parent.health -= damage
+			print(parent.health)
 
 func end_attack():
 	global.enemy_current_attack = false
@@ -115,7 +112,6 @@ func _on_attack_cooldown_timeout():
 
 func receive_damage(damage):
 	health -= damage
-
 
 func death():
 	if health <= 0:

@@ -245,6 +245,7 @@ shape = SubResource("CapsuleShape2D_yn4rx")
 [node name="detection_area" type="Area2D" parent="."]
 collision_layer = 2
 collision_mask = 2
+monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="detection_area"]
 shape = SubResource("CircleShape2D_f25nw")
@@ -256,6 +257,7 @@ shape = SubResource("CircleShape2D_et7ok")
 debug_color = Color(0.890055, 0.311984, 0.250409, 0.42)
 
 [node name="enemy_hurtbox" type="Area2D" parent="."]
+monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="enemy_hurtbox"]
 position = Vector2(4, -7)
