@@ -8,7 +8,6 @@ const SPEED = 250
 @onready var player_collition = $player_collition
 @onready var player_hitbox = $player_hitbox
 @onready var player_hurtbox = $player_hurtbox
-@onready var timer = $Timer
 @onready var take_damage_cooldown = $take_damage_cooldown
 @onready var attack_animation = $attack_animation_timer
 
@@ -28,12 +27,13 @@ var dodge_direction: Vector2 = Vector2.ZERO
 # Combat Variables
 var enemy_in_attack_range = false
 var enemy_attack_cooldown = true
-var health = 100
-var armor = 0
-var buffs = 0
+var player_health = 100
+var player_armor = 0
+var player_buffs = [{"damage_bonus":2}]
 var player_damage = 5
 var player_alive = true
 var is_attacking = false
+var can_receive_damage = true
 
 #Signals
 signal attack_started
@@ -145,43 +145,45 @@ func start_attack():
 			parent.receive_damage(calculate_total_damage())
 			print(parent.enemy_health)
 
+func calculate_total_damage() -> int:
+	var total_damage = player_damage
+	for buff in player_buffs:
+		total_damage += buff.damage_bonus
+	return total_damage
+
 func end_attack():
 	is_attacking = false
 
 func _on_attack_animation_timer_timeout():
 	end_attack()
 
-func play_death_animation():
-	current_state = PlayerState.DEAD
-	play_animation()
+func receive_damage(damage:int):
+	var effective_damage = calculate_effective_damage(damage)
+	if can_receive_damage:
+		player_health -= effective_damage
+		can_receive_damage = false
+		take_damage_cooldown.start()
+		if player_health <= 0:
+			player_death()
+
+func _on_take_damage_cooldown_timeout():
+	can_receive_damage = true
+	pass # Replace with function body.
+
+func calculate_effective_damage(damage:int) -> int:
+	var effective_damage = damage - player_armor
+	return max(effective_damage, 0)  # Ensures damage is not negative
 
 func player_death():
-	if health <= 0 and player_alive:
+	if player_health <= 0 and player_alive:
 		player_alive = false
-		health = 0
+		player_health = 0
 		print("player has died")
 		emit_signal("player_died")
 
-func calculate_total_damage() -> int:
-	var total_damage = player_damage
-	for buff in buffs:
-		total_damage += buff.damage_bonus
-	return total_damage
-
-
-
-
-
-func _on_take_damage_cooldown_timeout():
-	enemy_attack_cooldown = true
-
-func _on_player_hitbox_body_entered(body):
-	if body.has_method("enemy"):
-		enemy_in_attack_range = true
-
-func _on_player_hitbox_body_exited(body):
-	if body.has_method("enemy"):
-		enemy_in_attack_range = false
+func play_death_animation():
+	current_state = PlayerState.DEAD
+	play_animation()
 
 
 

@@ -2307,3 +2307,6 @@ process_callback = 0
 
 [node name="Rat" parent="." instance=ExtResource("3_w3ktc")]
 position = Vector2(699, 321)
+
+[node name="Rat2" parent="." instance=ExtResource("3_w3ktc")]
+position = Vector2(464, 464)

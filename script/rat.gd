@@ -6,13 +6,12 @@ const SPEED = 50.0
 
 @onready var animated_sprite = $AnimatedSprite2D
 @onready var enemy_hurtbox = $enemy_hurtbox
-@onready var attack_cooldown = $attack_cooldown
+@onready var attack_animation = $attack_animation_timer
+@onready var attack_damage_cooldown = $attack_damage_cooldown
 
 
-
-
-enum enemy_state {IDLE, RUN, DEAD, HIT, ATTACK}
-var current_state = enemy_state
+enum EnemyState {IDLE, RUN, DEAD, HIT, ATTACK}
+var current_state: EnemyState = EnemyState.IDLE
 
 var player_chase = false
 var player_entity = null
@@ -21,67 +20,73 @@ var player_entity = null
 var enemy_health = 20
 var enemy_armor = 2
 var enemy_damage = 2
-var enemy_buff = 0
+var enemy_buffs = []
 var enemy_alive = true
-var player_in_attack_zone = false
+var player_in_attack_range = false
 var is_attacking = false
+var enemy_can_attack = true
 
+# Death Animation Flag
+var has_played_death_animation: bool = false
 
 
 func _ready():
 	pass
 
 func _physics_process(delta):
-	
-	#start_attack()
+	if enemy_alive:
+		#start_attack()
+		handle_attack()
+		handle_movement(delta)
+	else:
+		if not has_played_death_animation:
+			play_death_animation()
 	play_animation()
-	handle_movement(delta)
+	move_and_slide()
 
 func handle_movement(delta):
 	
-	if !enemy_alive:
-		current_state = enemy_state.DEAD
-		#animated_sprite.set_frame_and_progress(5,5)
-		velocity = Vector2.ZERO
-		
-		
-		
-	else:
-	
-		if player_chase:
-			position += (player_entity.position - position) / SPEED
-			current_state = enemy_state.RUN
-		
+	if player_chase:
+		#var direction = (player_entity.position - position).normalized()
+		#position += clamp(direction * SPEED * delta,Vector2(1,1),direction * SPEED * delta)
+		position += (player_entity.position - position) / SPEED
+		#velocity = velocity.move_toward(player_entity.global_position, SPEED)
+		current_state = EnemyState.RUN
+
 #Sprite Flip
-			if (player_entity.position.x - position.x) > 0:
-				animated_sprite.flip_h = false
-				enemy_hurtbox.scale.x = 1
-			elif (player_entity.position.x - position.x) < 0:
-				animated_sprite.flip_h = true
-				enemy_hurtbox.scale.x = -1
+		if (player_entity.position.x - position.x) > 0:
+			animated_sprite.flip_h = false
+			enemy_hurtbox.scale.x = 1
+		elif (player_entity.position.x - position.x) < 0:
+			animated_sprite.flip_h = true
+			enemy_hurtbox.scale.x = -1
 
 func _on_detection_area_body_entered(body):
-	player_entity = body
-	player_chase = true
+	if body is Player:
+		player_entity = body
+		player_chase = true
 	
 
-
 func _on_detection_area_body_exited(body):
-	player_entity = null
-	player_chase = false
-	current_state = enemy_state.IDLE
+	if body is Player:
+		player_entity = null
+		player_chase = false
+		if enemy_alive:
+			current_state = EnemyState.IDLE
 
 func play_animation():
 	match current_state:
-		enemy_state.IDLE:
+		EnemyState.IDLE:
 			animated_sprite.play("idle")
-		enemy_state.RUN:
+		EnemyState.RUN:
 			animated_sprite.play("walk")
-		enemy_state.DEAD:
-			animated_sprite.play("dead")
-		enemy_state.HIT:
+		EnemyState.DEAD:
+			if not has_played_death_animation:
+				animated_sprite.play("dead")
+				has_played_death_animation = true
+		EnemyState.HIT:
 			animated_sprite.play("hit")
-		enemy_state.ATTACK:
+		EnemyState.ATTACK:
 			animated_sprite.play("attack")
 		_:
 			animated_sprite.play("idle")
@@ -90,25 +95,49 @@ func play_animation():
 
 #Handle Combat
 
-func enemy():
+func handle_attack():
+	if player_in_attack_range:
+		start_attack()
+		current_state = EnemyState.ATTACK
 	pass
 
+func _on_enemy_hurtbox_body_entered(body):
+	if body is Player:
+		player_in_attack_range = true
+	pass # Replace with function body.
+
+
+func _on_enemy_hurtbox_body_exited(body):
+	if body is Player:
+		player_in_attack_range = false
+	pass # Replace with function body.
+
 func start_attack():
-	is_attacking = true
-	global.enemy_current_attack = true
-	current_state = enemy_state.ATTACK
-	attack_cooldown.start()
-	for area in enemy_hurtbox.get_overlapping_areas():
-		var parent = area.get_parent()
-		if parent is Player: #and attack_cooldown.time_left <= 0:
-			parent.health -= enemy_damage
-			print(parent.health)
+	if enemy_can_attack:
+		is_attacking = true
+		attack_animation.start()
+		attack_damage_cooldown.start()
+		enemy_can_attack = false
+		for area in enemy_hurtbox.get_overlapping_areas():
+			var parent = area.get_parent()
+			if parent is Player: #and attack_cooldown.time_left <= 0:
+				parent.receive_damage(calculate_total_damage())
+				print(parent.player_health)
+
+func calculate_total_damage() -> int:
+	var total_damage = enemy_damage
+	for buff in enemy_buffs:
+		total_damage += buff.damage_bonus
+	return total_damage
 
 func end_attack():
-	global.enemy_current_attack = false
 	is_attacking = false
 
-func _on_attack_cooldown_timeout():
+func _on_attack_damage_cooldown_timeout():
+	enemy_can_attack = true
+	pass # Replace with function body.
+
+func _on_attack_animation_timer_timeout():
 	end_attack()
 
 func receive_damage(damage:int):
@@ -126,6 +155,12 @@ func death():
 	enemy_alive = false
 	enemy_health = 0
 	print("enemy has died")
+	
+
+func play_death_animation():
+	current_state = EnemyState.DEAD
+	play_animation()
+
 
 
 
