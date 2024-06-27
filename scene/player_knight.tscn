@@ -267,13 +267,13 @@ animations = [{
 }],
 "loop": false,
 "name": &"dead",
-"speed": 12.0
+"speed": 2.0
 }, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_jh5xl")
 }],
-"loop": true,
+"loop": false,
 "name": &"hit",
 "speed": 12.0
 }, {
@@ -397,7 +397,7 @@ script = ExtResource("1_adhw5")
 y_sort_enabled = true
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_bc3uw")
-animation = &"idle"
+animation = &"dead"
 autoplay = "idle"
 offset = Vector2(0.5, -25)
 
@@ -430,7 +430,12 @@ wait_time = 0.25
 one_shot = true
 autostart = true
 
+[node name="hit_animation_timer" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true
+
 [connection signal="body_entered" from="player_hitbox" to="." method="_on_player_hitbox_body_entered"]
 [connection signal="body_exited" from="player_hitbox" to="." method="_on_player_hitbox_body_exited"]
 [connection signal="timeout" from="take_damage_cooldown" to="." method="_on_take_damage_cooldown_timeout"]
 [connection signal="timeout" from="attack_animation_timer" to="." method="_on_attack_animation_timer_timeout"]
+[connection signal="timeout" from="hit_animation_timer" to="." method="_on_hit_animation_timer_timeout"]

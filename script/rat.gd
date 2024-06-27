@@ -8,6 +8,8 @@ const SPEED = 50.0
 @onready var enemy_hurtbox = $enemy_hurtbox
 @onready var attack_animation = $attack_animation_timer
 @onready var attack_damage_cooldown = $attack_damage_cooldown
+@onready var hit_animation = $hit_animation_timer
+
 
 
 enum EnemyState {IDLE, RUN, DEAD, HIT, ATTACK}
@@ -35,9 +37,8 @@ func _ready():
 
 func _physics_process(delta):
 	if enemy_alive:
-		#start_attack()
-		handle_attack()
 		handle_movement(delta)
+		handle_attack()
 	else:
 		if not has_played_death_animation:
 			play_death_animation()
@@ -45,12 +46,8 @@ func _physics_process(delta):
 	move_and_slide()
 
 func handle_movement(delta):
-	
-	if player_chase:
-		#var direction = (player_entity.position - position).normalized()
-		#position += clamp(direction * SPEED * delta,Vector2(1,1),direction * SPEED * delta)
-		position += (player_entity.position - position) / SPEED
-		#velocity = velocity.move_toward(player_entity.global_position, SPEED)
+	if player_chase and current_state != EnemyState.ATTACK and current_state != EnemyState.HIT:
+		position += ((player_entity.position - position) / SPEED)
 		current_state = EnemyState.RUN
 
 #Sprite Flip
@@ -96,21 +93,18 @@ func play_animation():
 #Handle Combat
 
 func handle_attack():
-	if player_in_attack_range:
+	if player_in_attack_range and enemy_can_attack and not is_attacking:
 		start_attack()
 		current_state = EnemyState.ATTACK
-	pass
 
 func _on_enemy_hurtbox_body_entered(body):
 	if body is Player:
 		player_in_attack_range = true
-	pass # Replace with function body.
 
 
 func _on_enemy_hurtbox_body_exited(body):
 	if body is Player:
 		player_in_attack_range = false
-	pass # Replace with function body.
 
 func start_attack():
 	if enemy_can_attack:
@@ -120,7 +114,7 @@ func start_attack():
 		enemy_can_attack = false
 		for area in enemy_hurtbox.get_overlapping_areas():
 			var parent = area.get_parent()
-			if parent is Player: #and attack_cooldown.time_left <= 0:
+			if parent is Player:
 				parent.receive_damage(calculate_total_damage())
 				print(parent.player_health)
 
@@ -132,20 +126,27 @@ func calculate_total_damage() -> int:
 
 func end_attack():
 	is_attacking = false
+	if enemy_alive:
+		current_state = EnemyState.IDLE
 
 func _on_attack_damage_cooldown_timeout():
 	enemy_can_attack = true
-	pass # Replace with function body.
 
 func _on_attack_animation_timer_timeout():
 	end_attack()
+	current_state = EnemyState.IDLE
 
 func receive_damage(damage:int):
 	var effective_damage = calculate_effective_damage(damage)
 	enemy_health -= effective_damage
+	current_state = EnemyState.HIT
+	hit_animation.start()
 	if enemy_health <= 0:
 		death()
 
+func _on_hit_animation_timer_timeout():
+	if enemy_alive:
+		current_state = EnemyState.IDLE
 
 func calculate_effective_damage(damage:int) -> int:
 	var effective_damage = damage - enemy_armor

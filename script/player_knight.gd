@@ -10,6 +10,8 @@ const SPEED = 250
 @onready var player_hurtbox = $player_hurtbox
 @onready var take_damage_cooldown = $take_damage_cooldown
 @onready var attack_animation = $attack_animation_timer
+@onready var hit_animation_timer = $hit_animation_timer
+
 
 enum PlayerState {IDLE, RUN, DODGE, DEAD, HIT, ATTACK}
 var current_state: PlayerState = PlayerState.IDLE
@@ -86,9 +88,9 @@ func get_input():
 	input = Input.get_vector("move_left", "move_right", "move_up", "move_down").normalized()
 
 func update_velocity():
-	if is_dodging:
+	if is_dodging and current_state != PlayerState.HIT:
 		velocity = dodge_direction * dodge_speed
-	elif is_attacking:
+	elif is_attacking and current_state != PlayerState.HIT:
 		current_state = PlayerState.ATTACK
 		velocity = Vector2.ZERO
 	else:
@@ -104,6 +106,8 @@ func update_sprite_direction():
 		player_hitbox.scale.x = -1 if input.x < 0 else 1
 
 func update_player_state():
+	if current_state == PlayerState.HIT:
+		return
 	current_state = PlayerState.RUN if velocity.length() > 0 else PlayerState.IDLE
 
 func handle_dodge(delta):
@@ -163,12 +167,18 @@ func receive_damage(damage:int):
 		player_health -= effective_damage
 		can_receive_damage = false
 		take_damage_cooldown.start()
+		current_state = PlayerState.HIT
+		hit_animation_timer.start()
 		if player_health <= 0:
 			player_death()
 
+func _on_hit_animation_timer_timeout():
+	if player_alive:
+		current_state = PlayerState.IDLE
+
 func _on_take_damage_cooldown_timeout():
-	can_receive_damage = true
-	pass # Replace with function body.
+	if player_alive:
+		can_receive_damage = true
 
 func calculate_effective_damage(damage:int) -> int:
 	var effective_damage = damage - player_armor
@@ -184,6 +194,3 @@ func player_death():
 func play_death_animation():
 	current_state = PlayerState.DEAD
 	play_animation()
-
-
-

@@ -11,12 +11,12 @@ func _ready():
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-	#dodging()
+func _process(delta):
+	dodging()
 
-#func dodging():
-	#if player_knight.is_dodging:
-		#hitbox_shape.disabled = true
+func dodging():
+	if player_knight.is_dodging:
+		hitbox_shape.disabled = true
 		#print("iframe")
-	#else:
-		#hitbox_shape.disabled = false
+	else:
+		hitbox_shape.disabled = false
