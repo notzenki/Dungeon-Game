@@ -42,7 +42,8 @@ signal attack_started
 signal attack_ended
 signal player_died
 
-
+# Attack Animation Variables
+var attack_animation_index: int = 0  # Keep track of which attack animation to use
 
 # Death Animation Flag
 var has_played_death_animation: bool = false
@@ -77,7 +78,10 @@ func play_animation():
 		PlayerState.HIT:
 			animated_sprite.play("hit")
 		PlayerState.ATTACK:
-			animated_sprite.play("attack")
+			if attack_animation_index == 0:
+				animated_sprite.play("attack")
+			else:
+				animated_sprite.play("attack_2")
 		PlayerState.DODGE:
 			animated_sprite.play("roll")
 		_:
@@ -143,6 +147,7 @@ func start_attack():
 	is_attacking = true
 	current_state = PlayerState.ATTACK
 	attack_animation.start()
+	attack_animation_index = (attack_animation_index + 1) % 2  # Alternate between 0 and 1
 	for area in player_hurtbox.get_overlapping_areas():
 		var parent = area.get_parent()
 		if parent is Enemy:

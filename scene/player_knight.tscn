@@ -213,9 +213,9 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_aaw23")
 }],
-"loop": true,
+"loop": false,
 "name": &"attack",
-"speed": 12.0
+"speed": 8.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -236,8 +236,8 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_w6jid")
 }],
-"loop": true,
-"name": &"attack 2",
+"loop": false,
+"name": &"attack_2",
 "speed": 12.0
 }, {
 "frames": [{
@@ -397,7 +397,7 @@ script = ExtResource("1_adhw5")
 y_sort_enabled = true
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_bc3uw")
-animation = &"dead"
+animation = &"attack"
 autoplay = "idle"
 offset = Vector2(0.5, -25)
 
@@ -426,7 +426,7 @@ wait_time = 2.0
 
 [node name="attack_animation_timer" type="Timer" parent="."]
 process_callback = 0
-wait_time = 0.25
+wait_time = 0.4
 one_shot = true
 autostart = true
 

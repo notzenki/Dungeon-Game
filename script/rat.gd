@@ -139,8 +139,9 @@ func _on_attack_animation_timer_timeout():
 func receive_damage(damage:int):
 	var effective_damage = calculate_effective_damage(damage)
 	enemy_health -= effective_damage
-	current_state = EnemyState.HIT
-	hit_animation.start()
+	if enemy_alive:
+		current_state = EnemyState.HIT
+		hit_animation.start()
 	if enemy_health <= 0:
 		death()
 
