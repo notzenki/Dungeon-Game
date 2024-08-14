@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://ckga5qxbfmo1b"]
+[gd_scene load_steps=12 format=3 uid="uid://bcabdj3k8t0rc"]
 
 [ext_resource type="Texture2D" uid="uid://nd8j8pdrn6c5" path="res://assets/EPIC RPG World Pack - [FREE Demo]Ancient Ruins - Copia/Tilesets/Tileset-Terrain2.png" id="1_8iarm"]
 [ext_resource type="Script" path="res://script/levelController.gd" id="1_k3q42"]
@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://dpkvoixidxrsk" path="res://assets/EPIC RPG World Pack - [FREE Demo]Ancient Ruins - Copia/Tilesets/Tileset-Animated Terrains-8 frames-.png" id="4_kl10o"]
 [ext_resource type="PackedScene" uid="uid://bnr3qe5y36duy" path="res://scene/rat.tscn" id="4_ot3jw"]
 [ext_resource type="Texture2D" uid="uid://f43wpwimwcml" path="res://assets/water/water.png" id="5_8o3iw"]
-[ext_resource type="PackedScene" uid="uid://c7sij8o7o06k8" path="res://HUD.tscn" id="5_bfg3w"]
+[ext_resource type="PackedScene" uid="uid://h0n4eymf880" path="res://HUD.tscn" id="5_bfg3w"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_x2q6h"]
 texture = ExtResource("1_8iarm")
