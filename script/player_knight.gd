@@ -41,9 +41,9 @@ var is_attacking = false
 var can_receive_damage = true
 
 #Signals
-signal attack_started
-signal attack_ended
-signal player_died
+#signal attack_started
+#signal attack_ended
+#signal player_died
 
 # Attack Animation Variables
 var attack_animation_index: int = 0  # Keep track of which attack animation to use
@@ -91,11 +91,11 @@ func play_animation():
 		_:
 			animated_sprite.play("idle")
 
-#Movement Input
+
+
+# Handle Movement Input
 func get_input():
 	input = Input.get_vector("move_left", "move_right", "move_up", "move_down").normalized()
-
-
 
 func update_velocity():
 	if is_dodging and current_state != PlayerState.HIT:
@@ -144,6 +144,10 @@ func end_dodge():
 	velocity = Vector2.ZERO
 	current_state = PlayerState.IDLE
 	set_collision_mask_value(2, 1)
+
+
+
+# Handle Attack Input
 
 func handle_attack():
 	if Input.is_action_just_pressed("attack") and not is_attacking:
@@ -217,6 +221,8 @@ func play_death_animation():
 	play_animation()
 
 
+
+# Handle Enemy Kill Cuunter
+
 func _on_enemy_container_child_exiting_tree(node):
-	pass # Replace with function body.
 	score.enemies_killed()

@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Dungeon Game"
-run/main_scene="res://scene/lvl2.tscn"
+run/main_scene="res://scene/world.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 
 [autoload]

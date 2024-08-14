@@ -1,10 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://dvi7mlt8fq4vn"]
+[gd_scene load_steps=6 format=3 uid="uid://dvi7mlt8fq4vn"]
 
 [ext_resource type="Texture2D" uid="uid://d3y7eaaxelmak" path="res://assets/Catacombs/mainlevbuild.png" id="1_yw33w"]
 [ext_resource type="PackedScene" uid="uid://ctmeg1ytcwskl" path="res://scene/player_knight.tscn" id="2_j8tfa"]
-[ext_resource type="PackedScene" uid="uid://bnr3qe5y36duy" path="res://scene/rat.tscn" id="3_w3ktc"]
-[ext_resource type="PackedScene" uid="uid://w3omn8i6osw" path="res://nodes/enemy_spawner.tscn" id="4_3e2o0"]
-[ext_resource type="Script" path="res://script/spawner/spawn_info.gd" id="5_ufrrn"]
+[ext_resource type="PackedScene" uid="uid://dqdfvp8ponaso" path="res://scene/enemy_container.tscn" id="3_1p8ig"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_q7dyt"]
 texture = ExtResource("1_yw33w")
@@ -2276,14 +2274,6 @@ terrain_set_0/mode = 0
 navigation_layer_0/layers = 1
 sources/0 = SubResource("TileSetAtlasSource_q7dyt")
 
-[sub_resource type="Resource" id="Resource_ya5f6"]
-script = ExtResource("5_ufrrn")
-time_start = 0
-time_end = 10
-enemy = ExtResource("3_w3ktc")
-enemy_num = 30
-enemy_spawn_delay = 1
-
 [node name="World" type="Node2D"]
 z_as_relative = false
 y_sort_enabled = true
@@ -2315,11 +2305,6 @@ y_sort_enabled = true
 zoom = Vector2(2.2, 2.2)
 process_callback = 0
 
-[node name="Rat" parent="." instance=ExtResource("3_w3ktc")]
-position = Vector2(699, 321)
+[node name="enemyContainer" parent="." instance=ExtResource("3_1p8ig")]
 
-[node name="Rat2" parent="." instance=ExtResource("3_w3ktc")]
-position = Vector2(464, 464)
-
-[node name="EnemySpawner" parent="." instance=ExtResource("4_3e2o0")]
-spawns = Array[ExtResource("5_ufrrn")]([SubResource("Resource_ya5f6")])
+[connection signal="child_exiting_tree" from="enemyContainer" to="PlayerKnight" method="_on_enemy_container_child_exiting_tree"]
