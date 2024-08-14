@@ -1,7 +1,7 @@
 extends Control
 @onready var score = $score:
 	set(value):
-		score.text = "I killed... " + str(value)
+		score.text = "Enemies Killed:" + str(value)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

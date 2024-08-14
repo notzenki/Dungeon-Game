@@ -1,4 +1,4 @@
-[gd_scene load_steps=62 format=3 uid="uid://ctmeg1ytcwskl"]
+[gd_scene load_steps=63 format=3 uid="uid://ctmeg1ytcwskl"]
 
 [ext_resource type="Texture2D" uid="uid://djtw2wa5sxwnh" path="res://assets/Player Knight/_Attack2.png" id="1_558aw"]
 [ext_resource type="Script" path="res://script/player_knight.gd" id="1_adhw5"]
@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://be1plsnx8dgbn" path="res://assets/Player Knight/_Hit.png" id="4_wfvie"]
 [ext_resource type="Script" path="res://script/player_hitbox.gd" id="9_ec8wo"]
 [ext_resource type="PackedScene" uid="uid://pcsvg5txwtsy" path="res://scene/healthbar.tscn" id="10_xnr57"]
+[ext_resource type="PackedScene" uid="uid://cmsk4jjlichc4" path="res://scene/score.tscn" id="11_ke4n0"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_83qe3"]
 atlas = ExtResource("2_0pppw")
@@ -435,13 +436,23 @@ wait_time = 0.4
 wait_time = 0.2
 one_shot = true
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="HUD" type="CanvasLayer" parent="."]
 
-[node name="Healthbar" parent="CanvasLayer" instance=ExtResource("10_xnr57")]
+[node name="Healthbar" parent="HUD" instance=ExtResource("10_xnr57")]
 offset_left = 15.0
 offset_top = 15.0
 offset_right = 284.0
 offset_bottom = 38.0
+
+[node name="score" parent="HUD" instance=ExtResource("11_ke4n0")]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -292.0
+offset_top = 16.0
+offset_right = -10.0
+offset_bottom = 47.0
+grow_horizontal = 0
 
 [connection signal="body_entered" from="player_hitbox" to="." method="_on_player_hitbox_body_entered"]
 [connection signal="body_exited" from="player_hitbox" to="." method="_on_player_hitbox_body_exited"]

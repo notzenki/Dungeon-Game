@@ -187,7 +187,6 @@ func death():
 	enemy_alive = false
 	enemy_health = 0
 	killed.emit()
-	queue_free()
 	print("enemy has died")
 	
 	

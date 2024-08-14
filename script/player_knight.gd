@@ -11,8 +11,9 @@ const SPEED = 250
 @onready var take_damage_cooldown = $take_damage_cooldown
 @onready var attack_animation = $attack_animation_timer
 @onready var hit_animation_timer = $hit_animation_timer
-@onready var healthbar = $CanvasLayer/Healthbar
-
+@onready var healthbar = $HUD/Healthbar
+@onready var score = $HUD/score
+@onready var counter = $HUD/score/counter
 
 
 enum PlayerState {IDLE, RUN, DODGE, DEAD, HIT, ATTACK}
@@ -214,3 +215,8 @@ func player_death():
 func play_death_animation():
 	current_state = PlayerState.DEAD
 	play_animation()
+
+
+func _on_enemy_container_child_exiting_tree(node):
+	pass # Replace with function body.
+	score.enemies_killed()
