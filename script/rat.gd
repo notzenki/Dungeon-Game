@@ -2,13 +2,15 @@ extends CharacterBody2D
 
 class_name Enemy
 
-const SPEED = 50.0
+const SPEED = 100.0
 
 @onready var animated_sprite = $AnimatedSprite2D
 @onready var enemy_hurtbox = $enemy_hurtbox
 @onready var attack_animation = $attack_animation_timer
 @onready var attack_damage_cooldown = $attack_damage_cooldown
 @onready var hit_animation = $hit_animation_timer
+@onready var healthbar = $Healthbar
+@onready var death_timer = $death_timer
 
 
 
@@ -20,8 +22,8 @@ var player_entity = null
 
 #Combat Variables
 var enemy_health = 20
-var enemy_armor = 2
-var enemy_damage = 2
+var enemy_armor = 0
+var enemy_damage = 5
 var enemy_buffs = []
 var enemy_alive = true
 var player_in_attack_range = false
@@ -34,6 +36,7 @@ var has_played_death_animation: bool = false
 
 func _ready():
 	pass
+	healthbar.init_health(enemy_health)
 
 func _physics_process(delta):
 	if enemy_alive:
@@ -45,18 +48,30 @@ func _physics_process(delta):
 	play_animation()
 	move_and_slide()
 
-func handle_movement(delta):
-	if player_chase and current_state != EnemyState.ATTACK and current_state != EnemyState.HIT:
-		position += ((player_entity.position - position) / SPEED)
-		current_state = EnemyState.RUN
 
-#Sprite Flip
-		if (player_entity.position.x - position.x) > 0:
-			animated_sprite.flip_h = false
-			enemy_hurtbox.scale.x = 1
-		elif (player_entity.position.x - position.x) < 0:
-			animated_sprite.flip_h = true
-			enemy_hurtbox.scale.x = -1
+
+#Handle Enemy Movement toward Player
+
+func handle_movement(delta):
+	var direction = get_direction_to_player()
+	if player_chase and current_state != EnemyState.ATTACK and current_state != EnemyState.HIT:
+	#if abs(direction.x) < 150 and abs(direction.y) < 150 and current_state != EnemyState.ATTACK and current_state != EnemyState.HIT:
+		#position += ((player_entity.position - position) / SPEED)
+		velocity = direction.normalized() * SPEED
+		current_state = EnemyState.RUN
+	else:
+		velocity = Vector2.ZERO
+
+	#Sprite Flip
+		#if (player_entity.position.x - position.x) > 0:
+			#animated_sprite.flip_h = false
+			#enemy_hurtbox.scale.x = 1
+		#elif (player_entity.position.x - position.x) < 0:
+			#animated_sprite.flip_h = true
+			#enemy_hurtbox.scale.x = -1
+	if velocity.x != 0:
+		animated_sprite.flip_h = velocity.x < 0
+		enemy_hurtbox.scale.x = -1 if velocity.x < 0 else 1
 
 func _on_detection_area_body_entered(body):
 	if body is Player:
@@ -70,6 +85,17 @@ func _on_detection_area_body_exited(body):
 		player_chase = false
 		if enemy_alive:
 			current_state = EnemyState.IDLE
+
+func get_direction_to_player():
+	var player_node = get_tree().get_first_node_in_group("player") as Node2D #Gets the player
+	
+	if player_node != null:      #If there's a player
+		return (player_node.global_position - global_position)     #We get the position of the player minus our position and normalize it to get vector we can use
+	return Vector2.ZERO
+
+
+
+#Handle Enemy Animations
 
 func play_animation():
 	match current_state:
@@ -93,6 +119,7 @@ func play_animation():
 #Handle Combat
 
 func handle_attack():
+	#var player_dead = Player.connect("player_died", Player)
 	if player_in_attack_range and enemy_can_attack and not is_attacking:
 		start_attack()
 		current_state = EnemyState.ATTACK
@@ -139,6 +166,9 @@ func _on_attack_animation_timer_timeout():
 func receive_damage(damage:int):
 	var effective_damage = calculate_effective_damage(damage)
 	enemy_health -= effective_damage
+	
+	if is_instance_valid(healthbar):
+		healthbar.health = enemy_health  
 	if enemy_alive:
 		current_state = EnemyState.HIT
 		hit_animation.start()
@@ -162,10 +192,7 @@ func death():
 func play_death_animation():
 	current_state = EnemyState.DEAD
 	play_animation()
+	death_timer.start()
 
-
-
-
-
-
-
+func _on_death_timer_timeout():
+	queue_free()

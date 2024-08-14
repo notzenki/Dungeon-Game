@@ -1,4 +1,4 @@
-[gd_scene load_steps=61 format=3 uid="uid://ctmeg1ytcwskl"]
+[gd_scene load_steps=62 format=3 uid="uid://ctmeg1ytcwskl"]
 
 [ext_resource type="Texture2D" uid="uid://djtw2wa5sxwnh" path="res://assets/Player Knight/_Attack2.png" id="1_558aw"]
 [ext_resource type="Script" path="res://script/player_knight.gd" id="1_adhw5"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://bcb86rnq7wrgp" path="res://assets/Player Knight/_Run.png" id="4_gjej0"]
 [ext_resource type="Texture2D" uid="uid://be1plsnx8dgbn" path="res://assets/Player Knight/_Hit.png" id="4_wfvie"]
 [ext_resource type="Script" path="res://script/player_hitbox.gd" id="9_ec8wo"]
+[ext_resource type="PackedScene" uid="uid://pcsvg5txwtsy" path="res://scene/healthbar.tscn" id="10_xnr57"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_83qe3"]
 atlas = ExtResource("2_0pppw")
@@ -377,11 +378,13 @@ animations = [{
 "speed": 12.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ukux6"]
-size = Vector2(14, 21.5)
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_emri3"]
+radius = 7.0
+height = 26.5
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_10rtq"]
-size = Vector2(14, 22)
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_8n8qx"]
+radius = 7.0
+height = 26.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ag83y"]
 size = Vector2(44, 41)
@@ -389,8 +392,6 @@ size = Vector2(44, 41)
 [node name="PlayerKnight" type="CharacterBody2D" groups=["player"]]
 z_index = 1
 y_sort_enabled = true
-collision_layer = 3
-collision_mask = 3
 script = ExtResource("1_adhw5")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
@@ -403,16 +404,17 @@ offset = Vector2(0.5, -25)
 
 [node name="player_collition" type="CollisionShape2D" parent="."]
 y_sort_enabled = true
-position = Vector2(-4, 1.75)
-shape = SubResource("RectangleShape2D_ukux6")
+position = Vector2(-4, 0.75)
+shape = SubResource("CapsuleShape2D_emri3")
+debug_color = Color(0.65098, 0.513726, 0.203922, 0.392157)
 
 [node name="player_hitbox" type="Area2D" parent="."]
 script = ExtResource("9_ec8wo")
 
 [node name="hitbox_shape" type="CollisionShape2D" parent="player_hitbox"]
-position = Vector2(-4, 2)
-shape = SubResource("RectangleShape2D_10rtq")
-debug_color = Color(0.863524, 0.348871, 0.220223, 0.42)
+position = Vector2(-4, 1)
+shape = SubResource("CapsuleShape2D_8n8qx")
+debug_color = Color(0.890196, 0.290196, 0.388235, 0.372549)
 
 [node name="player_hurtbox" type="Area2D" parent="."]
 monitorable = false
@@ -427,12 +429,18 @@ wait_time = 2.0
 [node name="attack_animation_timer" type="Timer" parent="."]
 process_callback = 0
 wait_time = 0.4
-one_shot = true
-autostart = true
 
 [node name="hit_animation_timer" type="Timer" parent="."]
 wait_time = 0.2
 one_shot = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Healthbar" parent="CanvasLayer" instance=ExtResource("10_xnr57")]
+offset_left = 15.0
+offset_top = 15.0
+offset_right = 284.0
+offset_bottom = 38.0
 
 [connection signal="body_entered" from="player_hitbox" to="." method="_on_player_hitbox_body_entered"]
 [connection signal="body_exited" from="player_hitbox" to="." method="_on_player_hitbox_body_exited"]
