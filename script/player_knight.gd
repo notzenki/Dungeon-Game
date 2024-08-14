@@ -94,6 +94,8 @@ func play_animation():
 func get_input():
 	input = Input.get_vector("move_left", "move_right", "move_up", "move_down").normalized()
 
+
+
 func update_velocity():
 	if is_dodging and current_state != PlayerState.HIT:
 		velocity = dodge_direction * dodge_speed
@@ -189,6 +191,14 @@ func _on_hit_animation_timer_timeout():
 func _on_take_damage_cooldown_timeout():
 	if player_alive:
 		can_receive_damage = true
+		
+func _on_player_hitbox_body_entered(body: Node):
+	if player_alive:
+		print(body)
+		# if bdody.collision_layer == 3:
+		var damage = 2
+		player_health -= damage
+		if player_health <= 0: player_alive = false
 
 func calculate_effective_damage(damage:int) -> int:
 	var effective_damage = damage - player_armor

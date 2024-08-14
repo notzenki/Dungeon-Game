@@ -12,7 +12,7 @@ const SPEED = 100.0
 @onready var healthbar = $Healthbar
 @onready var death_timer = $death_timer
 
-
+signal killed
 
 enum EnemyState {IDLE, RUN, DEAD, HIT, ATTACK}
 var current_state: EnemyState = EnemyState.IDLE
@@ -186,7 +186,10 @@ func calculate_effective_damage(damage:int) -> int:
 func death():
 	enemy_alive = false
 	enemy_health = 0
+	killed.emit()
+	queue_free()
 	print("enemy has died")
+	
 	
 
 func play_death_animation():
