@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3 uid="uid://bnr3qe5y36duy"]
+[gd_scene load_steps=38 format=3 uid="uid://bnr3qe5y36duy"]
 
 [ext_resource type="Texture2D" uid="uid://dy15cino8hiu2" path="res://assets/Enemy/Rat/OutlinedRat/rat-attack-outline.png" id="1_5oor0"]
 [ext_resource type="Script" path="res://script/rat.gd" id="1_feuvs"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://cs62k10fj6ut0" path="res://assets/Enemy/Rat/OutlinedRat/rat-hurt-outline.png" id="3_5lvgu"]
 [ext_resource type="Texture2D" uid="uid://bpfadvbwyj412" path="res://assets/Enemy/Rat/OutlinedRat/rat-idle-outline.png" id="4_lun08"]
 [ext_resource type="Texture2D" uid="uid://c23nwt7sf41yb" path="res://assets/Enemy/Rat/OutlinedRat/rat-run-outline.png" id="5_aawjk"]
+[ext_resource type="PackedScene" uid="uid://pcsvg5txwtsy" path="res://scene/healthbar.tscn" id="7_6x62v"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tuo13"]
 atlas = ExtResource("1_5oor0")
@@ -227,15 +228,12 @@ height = 26.0
 [node name="Rat" type="CharacterBody2D" groups=["Enemy"]]
 z_index = 1
 y_sort_enabled = true
-collision_layer = 2
-collision_mask = 6
-collision_priority = 2.0
 script = ExtResource("1_feuvs")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_lxsk7")
-animation = &"attack"
+animation = &"dead"
 autoplay = "idle"
 offset = Vector2(0, -12)
 
@@ -243,8 +241,6 @@ offset = Vector2(0, -12)
 shape = SubResource("CapsuleShape2D_yn4rx")
 
 [node name="detection_area" type="Area2D" parent="."]
-collision_layer = 2
-collision_mask = 2
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="detection_area"]
@@ -274,6 +270,15 @@ wait_time = 3.0
 [node name="hit_animation_timer" type="Timer" parent="."]
 wait_time = 0.2
 
+[node name="death_timer" type="Timer" parent="."]
+wait_time = 0.8
+
+[node name="Healthbar" parent="." instance=ExtResource("7_6x62v")]
+offset_left = -13.0
+offset_top = -24.0
+offset_right = 13.0
+offset_bottom = -18.0
+
 [connection signal="animation_finished" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]
 [connection signal="body_entered" from="detection_area" to="." method="_on_detection_area_body_entered"]
 [connection signal="body_exited" from="detection_area" to="." method="_on_detection_area_body_exited"]
@@ -284,3 +289,4 @@ wait_time = 0.2
 [connection signal="timeout" from="attack_animation_timer" to="." method="_on_attack_animation_timer_timeout"]
 [connection signal="timeout" from="attack_damage_cooldown" to="." method="_on_attack_damage_cooldown_timeout"]
 [connection signal="timeout" from="hit_animation_timer" to="." method="_on_hit_animation_timer_timeout"]
+[connection signal="timeout" from="death_timer" to="." method="_on_death_timer_timeout"]
