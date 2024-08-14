@@ -11,6 +11,8 @@ const SPEED = 250
 @onready var take_damage_cooldown = $take_damage_cooldown
 @onready var attack_animation = $attack_animation_timer
 @onready var hit_animation_timer = $hit_animation_timer
+@onready var healthbar = $CanvasLayer/Healthbar
+
 
 
 enum PlayerState {IDLE, RUN, DODGE, DEAD, HIT, ATTACK}
@@ -50,6 +52,7 @@ var has_played_death_animation: bool = false
 
 func _ready():
 	current_state = PlayerState.IDLE
+	healthbar.init_health(player_health)
 
 func _physics_process(delta):
 	get_input()
@@ -178,6 +181,8 @@ func receive_damage(damage:int):
 		hit_animation_timer.start()
 		if player_health <= 0:
 			player_death()
+		
+		healthbar.health = player_health
 
 func _on_hit_animation_timer_timeout():
 	if player_alive:

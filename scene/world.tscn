@@ -2323,3 +2323,17 @@ position = Vector2(464, 464)
 
 [node name="EnemySpawner" parent="." instance=ExtResource("4_3e2o0")]
 spawns = Array[ExtResource("5_ufrrn")]([SubResource("Resource_ya5f6")])
+[node name="Rat3" parent="." instance=ExtResource("3_w3ktc")]
+position = Vector2(788, 546)
+
+[node name="Rat4" parent="." instance=ExtResource("3_w3ktc")]
+position = Vector2(1010, 492)
+
+[node name="Rat5" parent="." instance=ExtResource("3_w3ktc")]
+position = Vector2(1027, 270)
+
+[node name="Rat6" parent="." instance=ExtResource("3_w3ktc")]
+position = Vector2(1087, 90)
+
+[node name="Rat7" parent="." instance=ExtResource("3_w3ktc")]
+position = Vector2(1286, 348)
