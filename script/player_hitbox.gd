@@ -13,6 +13,7 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	dodging()
+	pass
 
 func dodging():
 	if player_knight.is_dodging:

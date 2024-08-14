@@ -1,8 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://h0n4eymf880"]
+[gd_scene load_steps=4 format=3 uid="uid://h0n4eymf880"]
 
 [ext_resource type="Script" path="res://script/HUD.gd" id="1_gcx30"]
+[ext_resource type="FontFile" uid="uid://s15272omc2m3" path="res://assets/retro.ttf" id="2_k6uhh"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_skxig"]
+font = ExtResource("2_k6uhh")
 font_size = 32
 
 [node name="HUD" type="Control"]
@@ -11,21 +13,16 @@ anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_top = 4.0
-offset_bottom = 4.0
+offset_right = -819.0
+offset_bottom = -572.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_gcx30")
 
 [node name="score" type="Label" parent="."]
 layout_mode = 1
-anchors_preset = 14
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_top = -117.0
-offset_bottom = -72.0
-grow_horizontal = 2
-grow_vertical = 2
+offset_right = 284.0
+offset_bottom = 41.0
 text = "I killed... 9999"
 label_settings = SubResource("LabelSettings_skxig")
 horizontal_alignment = 1

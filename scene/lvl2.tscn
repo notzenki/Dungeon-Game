@@ -1,12 +1,11 @@
-[gd_scene load_steps=12 format=3 uid="uid://bcabdj3k8t0rc"]
+[gd_scene load_steps=11 format=3 uid="uid://bcabdj3k8t0rc"]
 
 [ext_resource type="Texture2D" uid="uid://nd8j8pdrn6c5" path="res://assets/EPIC RPG World Pack - [FREE Demo]Ancient Ruins - Copia/Tilesets/Tileset-Terrain2.png" id="1_8iarm"]
 [ext_resource type="Script" path="res://script/levelController.gd" id="1_k3q42"]
 [ext_resource type="PackedScene" uid="uid://ctmeg1ytcwskl" path="res://scene/player_knight.tscn" id="2_elxht"]
 [ext_resource type="Texture2D" uid="uid://dpkvoixidxrsk" path="res://assets/EPIC RPG World Pack - [FREE Demo]Ancient Ruins - Copia/Tilesets/Tileset-Animated Terrains-8 frames-.png" id="4_kl10o"]
-[ext_resource type="PackedScene" uid="uid://bnr3qe5y36duy" path="res://scene/rat.tscn" id="4_ot3jw"]
 [ext_resource type="Texture2D" uid="uid://f43wpwimwcml" path="res://assets/water/water.png" id="5_8o3iw"]
-[ext_resource type="PackedScene" uid="uid://h0n4eymf880" path="res://HUD.tscn" id="5_bfg3w"]
+[ext_resource type="PackedScene" uid="uid://dqdfvp8ponaso" path="res://scene/enemy_container.tscn" id="6_5yr57"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_x2q6h"]
 texture = ExtResource("1_8iarm")
@@ -8334,12 +8333,6 @@ sources/2 = SubResource("TileSetAtlasSource_cm7l8")
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_k3q42")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-
-[node name="HUD" parent="CanvasLayer" instance=ExtResource("5_bfg3w")]
-offset_top = 0.0
-offset_bottom = 0.0
-
 [node name="TileMap" type="TileMap" parent="."]
 tile_set = SubResource("TileSet_uk2r2")
 format = 2
@@ -8362,12 +8355,6 @@ y_sort_enabled = true
 zoom = Vector2(2.2, 2.2)
 process_callback = 0
 
-[node name="enemyContainer" type="Node2D" parent="."]
+[node name="enemyContainer" parent="." instance=ExtResource("6_5yr57")]
 
-[node name="Rat" parent="enemyContainer" instance=ExtResource("4_ot3jw")]
-position = Vector2(-538, 265)
-
-[node name="Rat2" parent="enemyContainer" instance=ExtResource("4_ot3jw")]
-position = Vector2(564, 160)
-
-[connection signal="child_exiting_tree" from="enemyContainer" to="." method="_on_enemy_container_child_exiting_tree"]
+[connection signal="child_exiting_tree" from="enemyContainer" to="PlayerKnight" method="_on_enemy_container_child_exiting_tree"]

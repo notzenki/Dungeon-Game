@@ -5,7 +5,7 @@ extends Node2D
 @onready var player = get_tree().get_first_node_in_group("player")
 
 var time = 0
-var counter = 0
+var spawn_counter = 0
 func _on_timer_timeout():
 	time += 1
 	var enemy_spawns = spawns
@@ -16,12 +16,12 @@ func _on_timer_timeout():
 			else:
 				i.spawn_delay_counter = 0
 				var new_enemy = load(str(i.enemy.resource_path))
-				while counter < i.enemy_num:
+				while spawn_counter < i.enemy_num:
 					var enemy_spawn = new_enemy.instantiate()
 					enemy_spawn.global_position = get_random_position()
-					add_child(enemy_spawn)
-					counter +=1
-					print('enemigos puestos:' + str(counter))
+					get_parent().add_child(enemy_spawn)
+					spawn_counter +=1
+					print('enemigos puestos:' + str(spawn_counter))
 					
 	print('tiempo: ' + str(time))
 
