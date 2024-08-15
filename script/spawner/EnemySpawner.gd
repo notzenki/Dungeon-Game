@@ -23,7 +23,7 @@ func _on_timer_timeout():
 					spawn_counter +=1
 					print('enemigos puestos:' + str(spawn_counter))
 					
-	print('tiempo: ' + str(time))
+	#print('tiempo: ' + str(time))
 
 func get_random_position():
 	var vpr = get_viewport_rect().size * randf_range(1.1,1.4)

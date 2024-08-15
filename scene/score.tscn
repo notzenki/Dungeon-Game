@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://cmsk4jjlichc4"]
 
 [ext_resource type="FontFile" uid="uid://s15272omc2m3" path="res://assets/retro.ttf" id="1_qo50w"]
-[ext_resource type="Script" path="res://score.gd" id="2_m2xp6"]
+[ext_resource type="Script" path="res://script/score.gd" id="2_31c1i"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_6uc3g"]
 font = ExtResource("1_qo50w")
@@ -16,7 +16,7 @@ offset_right = 40.0
 offset_bottom = 23.0
 text = "I Have Killed"
 label_settings = SubResource("LabelSettings_6uc3g")
-script = ExtResource("2_m2xp6")
+script = ExtResource("2_31c1i")
 
 [node name="counter" type="Label" parent="."]
 layout_mode = 0

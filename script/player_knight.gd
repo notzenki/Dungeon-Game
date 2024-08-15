@@ -147,7 +147,7 @@ func end_dodge():
 
 
 
-# Handle Attack Input
+# Handle Combat Input
 
 func handle_attack():
 	if Input.is_action_just_pressed("attack") and not is_attacking:
@@ -186,8 +186,25 @@ func receive_damage(damage:int):
 		hit_animation_timer.start()
 		if player_health <= 0:
 			player_death()
-		
-		healthbar.health = player_health
+		healthbar.health = player_health  # <------  Healthbar Updater
+
+func calculate_effective_damage(damage:int) -> int:
+	var effective_damage = damage - player_armor
+	return max(effective_damage, 0)  # Ensures damage is not negative
+
+
+func receive_healing(healing:int):
+	var effective_healing = calculate_effective_healing(healing)
+	
+	player_health += effective_healing
+	healthbar.health = player_health  # <------  Healthbar Updater
+
+func calculate_effective_healing(healing:int) -> int:
+	var effective_healing = healing
+	return max(effective_healing, 0)  # Ensures damage is not negative
+
+
+
 
 func _on_hit_animation_timer_timeout():
 	if player_alive:
@@ -204,10 +221,6 @@ func _on_player_hitbox_body_entered(body: Node):
 		var damage = 2
 		player_health -= damage
 		if player_health <= 0: player_alive = false
-
-func calculate_effective_damage(damage:int) -> int:
-	var effective_damage = damage - player_armor
-	return max(effective_damage, 0)  # Ensures damage is not negative
 
 func player_death():
 	if player_health <= 0 and player_alive:
