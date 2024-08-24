@@ -1,6 +1,6 @@
 extends Node2D
 @onready var enemy_container = $enemyContainer
-
+@onready var lvlSelector = $"."
 
 var score := 0:
 	set(value):
