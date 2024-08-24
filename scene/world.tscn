@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://dvi7mlt8fq4vn"]
+[gd_scene load_steps=7 format=3 uid="uid://dvi7mlt8fq4vn"]
 
 [ext_resource type="Texture2D" uid="uid://d3y7eaaxelmak" path="res://assets/Catacombs/mainlevbuild.png" id="1_yw33w"]
 [ext_resource type="PackedScene" uid="uid://ctmeg1ytcwskl" path="res://scene/player_knight.tscn" id="2_j8tfa"]
 [ext_resource type="PackedScene" uid="uid://dqdfvp8ponaso" path="res://scene/enemy_container.tscn" id="3_1p8ig"]
+[ext_resource type="PackedScene" uid="uid://2hq2y2jefpui" path="res://scene/health_potion.tscn" id="4_tuqpj"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_q7dyt"]
 texture = ExtResource("1_yw33w")
@@ -2295,6 +2296,9 @@ layer_2/name = "Ysorting Test"
 layer_2/y_sort_enabled = true
 layer_2/z_index = 1
 layer_2/tile_data = PackedInt32Array(1179679, 2883584, 9)
+
+[node name="health_potion" parent="." instance=ExtResource("4_tuqpj")]
+position = Vector2(315, 199)
 
 [node name="PlayerKnight" parent="." instance=ExtResource("2_j8tfa")]
 position = Vector2(290.378, 147.452)
