@@ -143,7 +143,6 @@ func start_attack():
 			var parent = area.get_parent()
 			if parent is Player:
 				parent.receive_damage(calculate_total_damage())
-				print(parent.player_health)
 
 func calculate_total_damage() -> int:
 	var total_damage = enemy_damage

@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://dgcrr6i6wjx5p"]
+
+[ext_resource type="Script" path="res://script/buttons/Button2.gd" id="1_jiob8"]
+
+[node name="lvlBtn" type="Button"]
+text = "Lvl 2"
+script = ExtResource("1_jiob8")
+
+[connection signal="pressed" from="." to="." method="_on_pressed"]
