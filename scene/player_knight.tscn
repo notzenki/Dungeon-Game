@@ -1,4 +1,4 @@
-[gd_scene load_steps=63 format=3 uid="uid://ctmeg1ytcwskl"]
+[gd_scene load_steps=64 format=3 uid="uid://ctmeg1ytcwskl"]
 
 [ext_resource type="Texture2D" uid="uid://djtw2wa5sxwnh" path="res://assets/Player Knight/_Attack2.png" id="1_558aw"]
 [ext_resource type="Script" path="res://script/player_knight.gd" id="1_adhw5"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://bcb86rnq7wrgp" path="res://assets/Player Knight/_Run.png" id="4_gjej0"]
 [ext_resource type="Texture2D" uid="uid://be1plsnx8dgbn" path="res://assets/Player Knight/_Hit.png" id="4_wfvie"]
 [ext_resource type="Script" path="res://script/player_hitbox.gd" id="9_ec8wo"]
+[ext_resource type="Script" path="res://script/player_hurtbox.gd" id="10_ipcof"]
 [ext_resource type="PackedScene" uid="uid://pcsvg5txwtsy" path="res://scene/healthbar.tscn" id="10_xnr57"]
 [ext_resource type="PackedScene" uid="uid://cmsk4jjlichc4" path="res://scene/score.tscn" id="11_ke4n0"]
 
@@ -393,13 +394,15 @@ size = Vector2(44, 41)
 [node name="PlayerKnight" type="CharacterBody2D" groups=["player"]]
 z_index = 1
 y_sort_enabled = true
+collision_layer = 5
+collision_mask = 4
 script = ExtResource("1_adhw5")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 y_sort_enabled = true
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_bc3uw")
-animation = &"attack"
+animation = &"attack_2"
 autoplay = "idle"
 offset = Vector2(0.5, -25)
 
@@ -410,7 +413,7 @@ shape = SubResource("CapsuleShape2D_emri3")
 debug_color = Color(0.65098, 0.513726, 0.203922, 0.392157)
 
 [node name="player_hitbox" type="Area2D" parent="."]
-collision_mask = 5
+collision_mask = 7
 script = ExtResource("9_ec8wo")
 
 [node name="hitbox_shape" type="CollisionShape2D" parent="player_hitbox"]
@@ -421,9 +424,16 @@ debug_color = Color(0.890196, 0.290196, 0.388235, 0.372549)
 [node name="player_hurtbox" type="Area2D" parent="."]
 monitorable = false
 
+[node name="Polygon2D" type="Polygon2D" parent="player_hurtbox"]
+position = Vector2(27.17, -1.5)
+color = Color(0.854902, 0.388235, 0.556863, 0.509804)
+polygon = PackedVector2Array(-22.17, -20.5, 21.83, -20.5, 21.83, 20.5, -22.17, 20.5)
+
 [node name="hurtbox_shape" type="CollisionShape2D" parent="player_hurtbox"]
-position = Vector2(27, -7.5)
+position = Vector2(27.17, -1.5)
 shape = SubResource("RectangleShape2D_ag83y")
+debug_color = Color(0, 0.77288, 0.899274, 0.42)
+script = ExtResource("10_ipcof")
 
 [node name="take_damage_cooldown" type="Timer" parent="."]
 wait_time = 2.0

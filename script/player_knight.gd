@@ -67,8 +67,19 @@ func _physics_process(delta):
 	play_animation()
 	player_death()
 	move_and_slide()
+	
+	# Obtener la posición global del mouse
+	var mouse_position = get_global_mouse_position()
+	# Calcular la dirección desde el jugador hacia el mouse
+	var direction = (mouse_position - global_position).normalized()
+	# Calcular el ángulo en radianes
+	var angle = direction.angle()
+	# Actualizar la rotación del hurtbox
+	player_hurtbox.rotation = angle
+	# State Animations
 
-# State Animations
+# func _process(delta):
+
 func play_animation():
 	match current_state:
 		PlayerState.IDLE:
@@ -112,7 +123,7 @@ func update_sprite_direction():
 	if input.x != 0:
 		animated_sprite.flip_h = input.x < 0
 		player_collition.position.x = 4 if input.x < 0 else -4
-		player_hurtbox.scale.x = -1 if input.x < 0 else 1
+		# player_hurtbox.scale.x = -1 if input.x < 0 else 1
 		player_hitbox.scale.x = -1 if input.x < 0 else 1
 
 func update_player_state():
@@ -162,7 +173,6 @@ func start_attack():
 		var parent = area.get_parent()
 		if parent is Enemy:
 			parent.receive_damage(calculate_total_damage())
-			print(parent.enemy_health)
 
 func calculate_total_damage() -> int:
 	var total_damage = player_damage
@@ -177,6 +187,7 @@ func _on_attack_animation_timer_timeout():
 	end_attack()
 
 func receive_damage(damage:int):
+	
 	var effective_damage = calculate_effective_damage(damage)
 	if can_receive_damage:
 		player_health -= effective_damage
@@ -217,10 +228,20 @@ func _on_take_damage_cooldown_timeout():
 func _on_player_hitbox_body_entered(body: Node):
 	if player_alive:
 		print(body)
-		# if bdody.collision_layer == 3:
-		var damage = 2
-		player_health -= damage
-		if player_health <= 0: player_alive = false
+		if body is TileMap:
+			var tilemap = body as TileMap
+			var collision_position = tilemap.local_to_map(global_position)  # O la posición de la colisión específica
+			var cell = tilemap.get_cell_tile_data(4, collision_position)
+			#var tile_id = tilemap.get_cellv(cell)
+			print(collision_position)
+			print(cell)
+			# Verificar el tipo de tile
+			#if tile_id == 3:  # Suponiendo que el ID del tile peligroso es 3
+			#	var damage = 3
+			#	player_health -= damage
+			#	if player_health <= 0:
+			#		player_alive = false
+			#	receive_damage(damage)
 
 func player_death():
 	if player_health <= 0 and player_alive:
